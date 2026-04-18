@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Task Manager Dashboard</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial;
+}
+
+body {
+  display: flex;
+  background: #f4f6f9;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  height: 100vh;
+  background: #0d1b2a;
+  color: white;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+
+.sidebar ul {
+  list-style: none;
+}
+
+.sidebar li {
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.sidebar li:hover {
+  background: #1b263b;
+}
+
+.add-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  background: #1e90ff;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* CARDS */
+.cards {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.card {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.overdue-card {
+  background: #ffe5e5;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+}
+
+th {
+  background: #1e90ff;
+  color: white;
+}
+
+tr:nth-child(even) {
+  background: #f2f2f2;
+}
+
+.overdue {
+  background: #ffcccc !important;
+}
+
+/* RIGHT PANEL */
+.right {
+  width: 250px;
+  background: white;
+  padding: 20px;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  margin: 100px auto;
+  width: 300px;
+  border-radius: 10px;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+}
+
+button {
+  margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <h2>Task Manager</h2>
+  <ul>
+    <li>Dashboard</li>
+    <li>Tasks</li>
+    <li>Projects</li>
+    <li>History</li>
+  </ul>
+
+  <button class="add-btn" onclick="openModal()">+ Add Task</button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- STATS -->
+  <div class="cards">
+    <div class="card">Total Tasks: <span id="total">0</span></div>
+    <div class="card">Completed: <span id="done">0</span></div>
+    <div class="card overdue-card">Overdue: <span id="overdue">0</span></div>
+  </div>
+
+  <!-- TABLE -->
+  <table>
+    <thead>
+      <tr>
+        <th>Task</th>
+        <th>Assigned</th>
+        <th>Priority</th>
+        <th>Due</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="taskTable"></tbody>
+  </table>
+
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right">
+  <h3>Profile</h3>
+  <p>User: Admin</p>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>Add Task</h3>
+
+    <input type="text" id="taskName" placeholder="Task name">
+    <input type="text" id="assigned" placeholder="Assigned to">
+
+    <select id="priority">
+      <option>Low</option>
+      <option>Medium</option>
+      <option>High</option>
+    </select>
+
+    <input type="date" id="dueDate">
+
+    <select id="status">
+      <option>Pending</option>
+      <option>Ongoing</option>
+      <option>Done</option>
+    </select>
+
+    <button onclick="saveTask()">Save</button>
+    <button onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+function openModal() {
+  document.getElementById("modal").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+function saveTask() {
+  const task = {
+    name: document.getElementById("taskName").value,
+    assigned: document.getElementById("assigned").value,
+    priority: document.getElementById("priority").value,
+    due: document.getElementById("dueDate").value,
+    status: document.getElementById("status").value
+  };
+
+  tasks.push(task);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+
+  closeModal();
+  renderTasks();
+}
+
+function deleteTask(index) {
+  tasks.splice(index, 1);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  renderTasks();
+}
+
+function renderTasks() {
+  const table = document.getElementById("taskTable");
+  table.innerHTML = "";
+
+  let total = tasks.length;
+  let done = 0;
+  let overdue = 0;
+
+  const today = new Date().toISOString().split("T")[0];
+
+  tasks.forEach((t, i) => {
+    if (t.status === "Done") done++;
+    if (t.due < today && t.status !== "Done") overdue++;
+
+    const row = document.createElement("tr");
+
+    if (t.due < today && t.status !== "Done") {
+      row.classList.add("overdue");
+    }
+
+    row.innerHTML = `
+      <td>${t.name}</td>
+      <td>${t.assigned}</td>
+      <td>${t.priority}</td>
+      <td>${t.due}</td>
+      <td>${t.status}</td>
+      <td><button onclick="deleteTask(${i})">Delete</button></td>
+    `;
+
+    table.appendChild(row);
+  });
+
+  document.getElementById("total").innerText = total;
+  document.getElementById("done").innerText = done;
+  document.getElementById("overdue").innerText = overdue;
+}
+
+renderTasks();
+</script>
+
+</body>
+</html>
