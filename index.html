@@ -2,32 +2,35 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Task Manager Dashboard</title>
+<title>Task Dashboard</title>
+
+<!-- GOOGLE FONT -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
   display: flex;
-  background: #f4f6f9;
+  background: #f5f7fb;
 }
 
 /* SIDEBAR */
 .sidebar {
-  width: 220px;
+  width: 240px;
   height: 100vh;
-  background: #0d1b2a;
+  background: #0c1b2a;
   color: white;
   padding: 20px;
 }
 
 .sidebar h2 {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .sidebar ul {
@@ -35,111 +38,126 @@ body {
 }
 
 .sidebar li {
-  padding: 10px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
   cursor: pointer;
-  border-radius: 8px;
 }
 
+.sidebar li.active,
 .sidebar li:hover {
-  background: #1b263b;
+  background: #1d3b5c;
 }
 
-.add-btn {
-  margin-top: 20px;
-  width: 100%;
-  padding: 10px;
-  background: #1e90ff;
-  border: none;
-  color: white;
-  border-radius: 8px;
+.add-task {
+  margin-top: 40px;
+  background: #1d5cff;
+  padding: 15px;
+  border-radius: 15px;
+  text-align: center;
   cursor: pointer;
 }
 
 /* MAIN */
 .main {
   flex: 1;
-  padding: 20px;
+  padding: 25px;
 }
 
-/* CARDS */
-.cards {
+/* HEADER */
+.header {
   display: flex;
-  gap: 15px;
+  justify-content: space-between;
   margin-bottom: 20px;
 }
 
-.card {
-  flex: 1;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.search {
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  width: 200px;
 }
 
-.overdue-card {
-  background: #ffe5e5;
+/* WELCOME CARD */
+.welcome {
+  display: flex;
+  justify-content: space-between;
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.welcome button {
+  background: #1d5cff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+/* CARD */
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+/* BLUE CARD */
+.blue-card {
+  background: linear-gradient(135deg, #1d5cff, #3a8bff);
+  color: white;
 }
 
 /* TABLE */
 table {
   width: 100%;
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
+  margin-top: 10px;
 }
 
 th, td {
-  padding: 12px;
-  text-align: left;
+  padding: 10px;
 }
 
 th {
-  background: #1e90ff;
-  color: white;
+  text-align: left;
 }
 
-tr:nth-child(even) {
-  background: #f2f2f2;
-}
-
-.overdue {
-  background: #ffcccc !important;
+tr {
+  border-bottom: 1px solid #eee;
 }
 
 /* RIGHT PANEL */
 .right {
-  width: 250px;
+  width: 280px;
   background: white;
   padding: 20px;
 }
 
-/* MODAL */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
+.profile {
+  text-align: center;
 }
 
-.modal-content {
-  background: white;
-  padding: 20px;
-  margin: 100px auto;
-  width: 300px;
-  border-radius: 10px;
+.profile img {
+  width: 80px;
+  border-radius: 50%;
 }
 
-input, select {
-  width: 100%;
-  padding: 8px;
-  margin: 5px 0;
-}
-
-button {
-  margin-top: 10px;
+/* BUTTON */
+.btn {
+  background: #1d5cff;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -148,73 +166,90 @@ button {
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-  <h2>Task Manager</h2>
+  <h2>Tasky.io</h2>
   <ul>
-    <li>Dashboard</li>
+    <li class="active">Dashboard</li>
     <li>Tasks</li>
     <li>Projects</li>
-    <li>History</li>
+    <li>Work History</li>
+    <li>Inbox</li>
+    <li>Settings</li>
   </ul>
 
-  <button class="add-btn" onclick="openModal()">+ Add Task</button>
+  <div class="add-task" onclick="openModal()">+ Add Task</div>
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-  <!-- STATS -->
-  <div class="cards">
-    <div class="card">Total Tasks: <span id="total">0</span></div>
-    <div class="card">Completed: <span id="done">0</span></div>
-    <div class="card overdue-card">Overdue: <span id="overdue">0</span></div>
+  <!-- HEADER -->
+  <div class="header">
+    <h2>Dashboard</h2>
+    <input class="search" placeholder="Search...">
   </div>
 
-  <!-- TABLE -->
-  <table>
-    <thead>
-      <tr>
-        <th>Task</th>
-        <th>Assigned</th>
-        <th>Priority</th>
-        <th>Due</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody id="taskTable"></tbody>
-  </table>
+  <!-- WELCOME -->
+  <div class="welcome">
+    <div>
+      <h3>Welcome To</h3>
+      <h1>Your Task Management Area</h1>
+      <p>Manage all your tasks easily</p>
+      <br>
+      <button>Learn More</button>
+    </div>
+  </div>
+
+  <!-- GRID -->
+  <div class="grid">
+
+    <div>
+      <div class="card">
+        <h3>Tasks</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Task</th>
+              <th>Assigned</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="taskTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card blue-card">
+      <h2>Total Tasks</h2>
+      <h1 id="total">0</h1>
+    </div>
+
+  </div>
 
 </div>
 
 <!-- RIGHT PANEL -->
 <div class="right">
-  <h3>Profile</h3>
-  <p>User: Admin</p>
+  <div class="profile">
+    <img src="https://i.pravatar.cc/100">
+    <h3>Admin</h3>
+    <p>Task Manager</p>
+  </div>
 </div>
 
 <!-- MODAL -->
-<div class="modal" id="modal">
-  <div class="modal-content">
+<div id="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:#00000088;">
+  <div style="background:white; padding:20px; width:300px; margin:100px auto; border-radius:15px;">
     <h3>Add Task</h3>
-
-    <input type="text" id="taskName" placeholder="Task name">
-    <input type="text" id="assigned" placeholder="Assigned to">
-
-    <select id="priority">
-      <option>Low</option>
-      <option>Medium</option>
-      <option>High</option>
-    </select>
-
-    <input type="date" id="dueDate">
+    <input id="task" placeholder="Task name"><br><br>
+    <input id="assigned" placeholder="Assigned"><br><br>
 
     <select id="status">
       <option>Pending</option>
-      <option>Ongoing</option>
       <option>Done</option>
-    </select>
+    </select><br><br>
 
-    <button onclick="saveTask()">Save</button>
+    <button class="btn" onclick="addTask()">Save</button>
     <button onclick="closeModal()">Cancel</button>
   </div>
 </div>
@@ -222,74 +257,52 @@ button {
 <script>
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
-function openModal() {
+function openModal(){
   document.getElementById("modal").style.display = "block";
 }
 
-function closeModal() {
+function closeModal(){
   document.getElementById("modal").style.display = "none";
 }
 
-function saveTask() {
-  const task = {
-    name: document.getElementById("taskName").value,
+function addTask(){
+  let task = {
+    name: document.getElementById("task").value,
     assigned: document.getElementById("assigned").value,
-    priority: document.getElementById("priority").value,
-    due: document.getElementById("dueDate").value,
     status: document.getElementById("status").value
   };
 
   tasks.push(task);
   localStorage.setItem("tasks", JSON.stringify(tasks));
-
   closeModal();
-  renderTasks();
+  render();
 }
 
-function deleteTask(index) {
-  tasks.splice(index, 1);
+function deleteTask(i){
+  tasks.splice(i,1);
   localStorage.setItem("tasks", JSON.stringify(tasks));
-  renderTasks();
+  render();
 }
 
-function renderTasks() {
-  const table = document.getElementById("taskTable");
+function render(){
+  let table = document.getElementById("taskTable");
   table.innerHTML = "";
 
-  let total = tasks.length;
-  let done = 0;
-  let overdue = 0;
-
-  const today = new Date().toISOString().split("T")[0];
-
-  tasks.forEach((t, i) => {
-    if (t.status === "Done") done++;
-    if (t.due < today && t.status !== "Done") overdue++;
-
-    const row = document.createElement("tr");
-
-    if (t.due < today && t.status !== "Done") {
-      row.classList.add("overdue");
-    }
-
-    row.innerHTML = `
-      <td>${t.name}</td>
-      <td>${t.assigned}</td>
-      <td>${t.priority}</td>
-      <td>${t.due}</td>
-      <td>${t.status}</td>
-      <td><button onclick="deleteTask(${i})">Delete</button></td>
+  tasks.forEach((t,i)=>{
+    table.innerHTML += `
+      <tr>
+        <td>${t.name}</td>
+        <td>${t.assigned}</td>
+        <td>${t.status}</td>
+        <td><button onclick="deleteTask(${i})">Delete</button></td>
+      </tr>
     `;
-
-    table.appendChild(row);
   });
 
-  document.getElementById("total").innerText = total;
-  document.getElementById("done").innerText = done;
-  document.getElementById("overdue").innerText = overdue;
+  document.getElementById("total").innerText = tasks.length;
 }
 
-renderTasks();
+render();
 </script>
 
 </body>
