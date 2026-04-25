@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <title>To-Do Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
 body { font-family: Arial; margin:0; background:#e9edf2; }
@@ -45,9 +44,20 @@ body { font-family: Arial; margin:0; background:#e9edf2; }
     border-radius:5px;
 }
 
+/* CONTROLS */
+.controls {
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+    flex-wrap:wrap;
+}
+.controls input, .controls select {
+    padding:8px;
+}
+
 /* TABLE */
-table { width:100%; border-collapse:collapse; background:white; margin-top:20px; }
-th { background:#7fa6d9; color:white; padding:10px; }
+table { width:100%; border-collapse:collapse; background:white; margin-top:15px; }
+th { background:#7fa6d9; color:white; padding:10px; cursor:pointer; }
 td { padding:10px; }
 tr:nth-child(even){ background:#f4f4f4; }
 
@@ -55,6 +65,17 @@ tr:nth-child(even){ background:#f4f4f4; }
 .badge { padding:5px 10px; border-radius:5px; color:white; }
 .high{background:red;} .low{background:orange;}
 .progress-status{background:#f39c12;} .not{background:gray;} .done{background:green;}
+
+/* BUTTONS */
+.action-btn {
+    padding:5px 8px;
+    margin:2px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+.edit{background:#3498db;color:white;}
+.delete{background:#e74c3c;color:white;}
 
 /* MOBILE */
 @media(max-width:768px){
@@ -75,29 +96,23 @@ tr:nth-child(even){ background:#f4f4f4; }
 <!-- CARDS -->
 <div class="cards">
 <div class="card">
-<div class="card-header blue">Total Tasks</div>
+<div class="card-header blue">Total</div>
 <div class="card-body" id="total">0</div>
 </div>
 
 <div class="card">
-<div class="card-header green">Completed Tasks</div>
+<div class="card-header green">Completed</div>
 <div class="card-body" id="completed">0</div>
 </div>
 
 <div class="card">
-<div class="card-header red">Pending Tasks</div>
+<div class="card-header red">Pending</div>
 <div class="card-body" id="pending">0</div>
 </div>
 </div>
 
 <!-- GRID -->
 <div class="grid">
-
-<!-- CHART -->
-<div class="box">
-<h3>Task Status</h3>
-<canvas id="chart"></canvas>
-</div>
 
 <!-- ADD TASK -->
 <div class="box">
@@ -126,27 +141,45 @@ tr:nth-child(even){ background:#f4f4f4; }
 <input type="date" id="due">
 
 <button onclick="addTask()">Add Task</button>
+</div>
 
 </div>
 
+<!-- CONTROLS -->
+<div class="controls">
+<input type="text" id="search" placeholder="Search task..." onkeyup="render()">
+
+<select id="filterCategory" onchange="render()">
+<option value="">All Category</option>
+<option>Work</option>
+<option>Personal</option>
+<option>Learning</option>
+<option>Health</option>
+</select>
+
+<select id="filterStatus" onchange="render()">
+<option value="">All Status</option>
+<option>Completed</option>
+<option>In Progress</option>
+<option>Not Started</option>
+</select>
+
+<select id="sortBy" onchange="render()">
+<option value="">Sort</option>
+<option value="due">Due Date</option>
+<option value="priority">Priority</option>
+</select>
 </div>
 
 <!-- TABLE -->
 <table id="table">
-<tr>
-<th>Task</th>
-<th>Category</th>
-<th>Priority</th>
-<th>Status</th>
-<th>Due</th>
-<th>Action</th>
-</tr>
 </table>
 
 </div>
 
 <script>
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+let editIndex = -1;
 
 function save(){
     localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -154,13 +187,36 @@ function save(){
 
 function render(){
     const table = document.getElementById("table");
+    let data = [...tasks];
+
+    // SEARCH
+    const search = document.getElementById("search").value.toLowerCase();
+    if(search){
+        data = data.filter(t=>t.task.toLowerCase().includes(search));
+    }
+
+    // FILTER
+    const cat = document.getElementById("filterCategory").value;
+    const stat = document.getElementById("filterStatus").value;
+
+    if(cat) data = data.filter(t=>t.cat==cat);
+    if(stat) data = data.filter(t=>t.status==stat);
+
+    // SORT
+    const sort = document.getElementById("sortBy").value;
+    if(sort=="due"){
+        data.sort((a,b)=>new Date(a.due)-new Date(b.due));
+    }
+    if(sort=="priority"){
+        data.sort((a,b)=>a.priority=="High"?-1:1);
+    }
 
     table.innerHTML = `
     <tr>
     <th>Task</th><th>Category</th><th>Priority</th><th>Status</th><th>Due</th><th>Action</th>
     </tr>`;
 
-    tasks.forEach((t,i)=>{
+    data.forEach((t,i)=>{
         table.innerHTML += `
         <tr>
         <td>${t.task}</td>
@@ -171,15 +227,16 @@ function render(){
             t.status=='In Progress'?'progress-status':'not'
         }">${t.status}</span></td>
         <td>${t.due || '-'}</td>
-        <td><button onclick="del(${i})">Delete</button></td>
+        <td>
+            <button class="action-btn edit" onclick="editTask(${i})">Edit</button>
+            <button class="action-btn delete" onclick="del(${i})">Delete</button>
+        </td>
         </tr>`;
     });
 
     document.getElementById("total").innerText = tasks.length;
     document.getElementById("completed").innerText = tasks.filter(t=>t.status=="Completed").length;
     document.getElementById("pending").innerText = tasks.filter(t=>t.status!="Completed").length;
-
-    updateChart();
 }
 
 function addTask(){
@@ -191,44 +248,45 @@ function addTask(){
 
     if(!taskInput.value) return alert("Enter task");
 
-    tasks.push({
-        task: taskInput.value,
-        cat: categoryInput.value,
-        priority: priorityInput.value,
-        status: statusInput.value,
-        due: dueInput.value
-    });
+    if(editIndex==-1){
+        tasks.push({
+            task: taskInput.value,
+            cat: categoryInput.value,
+            priority: priorityInput.value,
+            status: statusInput.value,
+            due: dueInput.value
+        });
+    } else {
+        tasks[editIndex] = {
+            task: taskInput.value,
+            cat: categoryInput.value,
+            priority: priorityInput.value,
+            status: statusInput.value,
+            due: dueInput.value
+        };
+        editIndex = -1;
+    }
 
-    taskInput.value = "";
+    taskInput.value="";
     save();
     render();
+}
+
+function editTask(i){
+    const t = tasks[i];
+    document.getElementById("task").value = t.task;
+    document.getElementById("category").value = t.cat;
+    document.getElementById("priority").value = t.priority;
+    document.getElementById("status").value = t.status;
+    document.getElementById("due").value = t.due;
+
+    editIndex = i;
 }
 
 function del(i){
     tasks.splice(i,1);
     save();
     render();
-}
-
-/* CHART */
-let chart;
-function updateChart(){
-    let c = tasks.filter(t=>t.status=="Completed").length;
-    let p = tasks.filter(t=>t.status=="In Progress").length;
-    let n = tasks.filter(t=>t.status=="Not Started").length;
-
-    if(chart) chart.destroy();
-
-    chart = new Chart(document.getElementById("chart"), {
-        type:'pie',
-        data:{
-            labels:["Completed","In Progress","Not Started"],
-            datasets:[{
-                data:[c,p,n],
-                backgroundColor:["green","orange","gray"]
-            }]
-        }
-    });
 }
 
 render();
