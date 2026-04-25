@@ -177,4 +177,132 @@ tr:nth-child(even) {
 <!-- CARDS -->
 <div class="cards">
     <div class="card">
-        <
+        <div class="card-header blue">✔ Total Tasks</div>
+        <div class="card-body">10</div>
+    </div>
+    <div class="card">
+        <div class="card-header green">✔ Completed Tasks</div>
+        <div class="card-body">4</div>
+    </div>
+    <div class="card">
+        <div class="card-header red">❗ Pending Tasks</div>
+        <div class="card-body">6</div>
+    </div>
+</div>
+
+<!-- GRID -->
+<div class="grid">
+
+<div class="box">
+    <h3>Task Status</h3>
+    <canvas id="pieChart"></canvas>
+</div>
+
+<div class="box">
+    <h3>Progress by Category</h3>
+
+    <div class="progress">
+        <div class="bar red-bar">50%</div>
+    </div>
+
+    <div class="progress">
+        <div class="bar yellow-bar">20%</div>
+    </div>
+
+    <div class="progress">
+        <div class="bar green-bar">55%</div>
+    </div>
+
+</div>
+
+</div>
+
+<!-- TABLE -->
+<div class="table-title">Task List</div>
+<table>
+<tr>
+    <th>Task Name</th>
+    <th>Category</th>
+    <th>Priority</th>
+    <th>Status</th>
+    <th>Due Date</th>
+</tr>
+
+<tr>
+<td>Create Excel Dashboard</td>
+<td>Work</td>
+<td><span class="badge high">High</span></td>
+<td><span class="badge progress-status">In Progress</span></td>
+<td>05-Apr-26</td>
+</tr>
+
+<tr>
+<td>Gym Workout</td>
+<td>Health</td>
+<td><span class="badge low">Low</span></td>
+<td><span class="badge progress-status">In Progress</span></td>
+<td>30-Apr-26</td>
+</tr>
+
+<tr>
+<td>Study Pivot Tables</td>
+<td>Learning</td>
+<td><span class="badge high">High</span></td>
+<td><span class="badge not">Not Started</span></td>
+<td>06-Apr-26</td>
+</tr>
+
+<tr>
+<td>Read a Book</td>
+<td>Personal</td>
+<td><span class="badge low">Low</span></td>
+<td><span class="badge progress-status">In Progress</span></td>
+<td>15-Apr-26</td>
+</tr>
+
+</table>
+
+<!-- FILTERS -->
+<div class="filters">
+
+<div class="filter">
+    <h4>Category</h4>
+    <button class="blue-btn">Work</button>
+    <button class="blue-btn">Personal</button>
+    <button class="blue-btn">Learning</button>
+    <button class="blue-btn">Health</button>
+</div>
+
+<div class="filter">
+    <h4>Status</h4>
+    <button class="blue-btn">All</button>
+    <button class="gray-btn">Not Started</button>
+    <button class="yellow-btn">In Progress</button>
+    <button class="red-btn">Completed</button>
+</div>
+
+<div class="filter">
+    <h4>Assigned To</h4>
+    <button class="blue-btn">Shamsu</button>
+    <button class="green-btn">Self</button>
+</div>
+
+</div>
+
+</div>
+
+<script>
+new Chart(document.getElementById("pieChart"), {
+    type: 'pie',
+    data: {
+        labels: ["Completed","In Progress","Not Started"],
+        datasets: [{
+            data: [40,30,30],
+            backgroundColor: ["#2ecc71","#e74c3c","#95a5a6"]
+        }]
+    }
+});
+</script>
+
+</body>
+</html>
