@@ -179,6 +179,53 @@ tr:nth-child(even){
 .form-grid{grid-template-columns:1fr;}
 .cards{flex-direction:column;}
 }
+    /* GLOW VARIABLES */
+:root {
+    --glow: 0 0 8px rgba(44,95,168,0.6),
+            0 0 15px rgba(44,95,168,0.4);
+}
+
+/* ADD TASK BUTTON GLOW */
+.open-btn {
+    box-shadow: var(--glow);
+    transition:0.3s;
+}
+.open-btn:hover {
+    box-shadow: 0 0 12px #2c5fa8, 0 0 25px #2c5fa8;
+}
+
+/* FORM BUTTON GLOW */
+.form-grid button {
+    box-shadow: var(--glow);
+}
+.form-grid button:hover {
+    box-shadow: 0 0 12px #2c5fa8, 0 0 25px #2c5fa8;
+}
+
+/* CARD GLOW ON HOVER */
+.card:hover {
+    box-shadow: 0 0 10px rgba(44,95,168,0.4),
+                0 0 20px rgba(44,95,168,0.3);
+}
+
+/* MODAL GLOW */
+.modal-content {
+    box-shadow: 0 0 15px rgba(44,95,168,0.3),
+                0 0 40px rgba(44,95,168,0.2);
+}
+
+/* INPUT FOCUS GLOW */
+.form-grid input:focus,
+.form-grid select:focus {
+    box-shadow: 0 0 8px rgba(44,95,168,0.5);
+    border-color:#2c5fa8;
+}
+
+/* TABLE HOVER GLOW */
+tr:hover {
+    background:#eaf2ff;
+    box-shadow: inset 0 0 10px rgba(44,95,168,0.1);
+}
 </style>
 
 </head>
