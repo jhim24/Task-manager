@@ -7,7 +7,7 @@
 
 <style>
 body {
-    font-family: 'Segoe UI', Arial;
+    font-family:'Segoe UI', Arial;
     margin:0;
     background: linear-gradient(135deg,#dfe9f3,#f5f7fa);
 }
@@ -17,8 +17,10 @@ body {
     background: linear-gradient(135deg,#2c5fa8,#1f4f91);
     color:white;
     text-align:center;
-    padding:6px 3px; /* mas maliit */
+    padding:12px 10px;
 }
+.header h1{margin:0;font-size:20px;}
+.header p{margin:2px 0 0;font-size:12px;}
 
 /* CONTAINER */
 .container { padding:20px; max-width:1100px; margin:auto; }
@@ -54,62 +56,22 @@ body {
 .orange{background:#f39c12;}
 .gray{background:#7f8c8d;}
 
-/* GRID */
-.grid {
-    display:flex;
-    justify-content:center;
-    margin-top:25px;
-}
-
-/* BOX */
-.box {
-    width:100%;
-    max-width:520px;
-    background:linear-gradient(135deg,#ffffff,#eef3f9);
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 6px 18px rgba(0,0,0,0.1);
-}
-
-/* FORM */
-.form-grid {
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:15px;
-}
-
-/* INPUT WRAPPER (SPACE FIX) */
-.form-grid input,
-.form-grid select {
-    width:100%;
-    padding:12px;
-    font-size:14px;
-    border:1px solid #ccd6e0;
-    border-radius:8px;
-    background:#f9fbfe;
-    box-sizing:border-box;
-}
-
-/* BUTTON */
-.form-grid button {
-    grid-column: span 2;
-    width:100%;
-    padding:12px;
+/* ADD BUTTON */
+.open-btn {
+    margin-top:20px;
+    padding:10px 15px;
     background:#2c5fa8;
     color:white;
     border:none;
     border-radius:8px;
     cursor:pointer;
 }
-.form-grid button:hover {
-    background:#1f4f91;
-}
 
 /* CONTROLS */
 .controls {
     display:flex;
     gap:10px;
-    margin-top:25px;
+    margin-top:20px;
     flex-wrap:wrap;
 }
 .controls input, .controls select {
@@ -127,19 +89,15 @@ table {
     border-radius:10px;
     overflow:hidden;
 }
-
-/* GRID LINES */
 th, td {
     border:1px solid #d6dee6;
     padding:12px;
     text-align:center;
 }
-
 th {
     background:#2c5fa8;
     color:white;
 }
-
 tr:nth-child(even){
     background:#f1f5fa;
 }
@@ -169,9 +127,51 @@ tr:nth-child(even){
 .edit{background:#3498db;color:white;}
 .delete{background:#e74c3c;color:white;}
 
-h3 {
-    text-align:center;
-    margin-bottom:15px;
+/* MODAL */
+.modal {
+    display:none;
+    position:fixed;
+    z-index:1000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+}
+.modal-content {
+    background:linear-gradient(135deg,#ffffff,#eef3f9);
+    margin:10% auto;
+    padding:20px;
+    width:90%;
+    max-width:450px;
+    border-radius:12px;
+}
+.close {
+    float:right;
+    font-size:20px;
+    cursor:pointer;
+}
+
+/* FORM */
+.form-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+.form-grid input,
+.form-grid select {
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+.form-grid button {
+    grid-column:span 2;
+    padding:10px;
+    background:#2c5fa8;
+    color:white;
+    border:none;
+    border-radius:6px;
 }
 
 /* MOBILE */
@@ -188,7 +188,6 @@ h3 {
 <div class="header">
 <h1>TO-DO LIST DASHBOARD</h1>
 <p>PRODUCTIVITY OVERVIEW</p>
-<p>KURTNEY LOVE SACSALAN</p>
 </div>
 
 <div class="container">
@@ -203,42 +202,9 @@ h3 {
 <div class="card"><div class="card-header gray">NOT STARTED</div><div class="card-body" id="notstarted">0</div></div>
 </div>
 
-<!-- FORM -->
+<!-- ADD BUTTON -->
 
-<div class="grid">
-<div class="box">
-
-<h3>Add Task</h3>
-
-<div class="form-grid">
-<input type="text" id="task" placeholder="Task name">
-
-<select id="category">
-<option>Work</option>
-<option>Personal</option>
-<option>Learning</option>
-<option>Health</option>
-</select>
-
-<select id="priority">
-<option>High</option>
-<option>Low</option>
-</select>
-
-<select id="status">
-<option>Completed</option>
-<option>In Progress</option>
-<option>Not Started</option>
-</select>
-
-<input type="date" id="due">
-
-<button onclick="addTask()">Add Task</button>
-
-</div>
-
-</div>
-</div>
+<button class="open-btn" onclick="openModal()">+ Add Task</button>
 
 <!-- CONTROLS -->
 
@@ -273,6 +239,45 @@ h3 {
 
 </div>
 
+<!-- MODAL -->
+
+<div id="taskModal" class="modal">
+<div class="modal-content">
+
+<span class="close" onclick="closeModal()">×</span>
+
+<h3>Add Task</h3>
+
+<div class="form-grid">
+<input type="text" id="task" placeholder="Task name">
+
+<select id="category">
+<option>Work</option>
+<option>Personal</option>
+<option>Learning</option>
+<option>Health</option>
+</select>
+
+<select id="priority">
+<option>High</option>
+<option>Low</option>
+</select>
+
+<select id="status">
+<option>Completed</option>
+<option>In Progress</option>
+<option>Not Started</option>
+</select>
+
+<input type="date" id="due">
+
+<button onclick="addTask()">Save Task</button>
+
+</div>
+
+</div>
+</div>
+
 <script>
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let editIndex = -1;
@@ -281,36 +286,40 @@ function save(){
     localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
+function openModal(){
+    document.getElementById("taskModal").style.display="block";
+}
+
+function closeModal(){
+    document.getElementById("taskModal").style.display="none";
+}
+
 function render(){
-    const table = document.getElementById("table");
-    let data = [...tasks];
+    const table=document.getElementById("table");
+    let data=[...tasks];
 
-    const search = document.getElementById("search").value.toLowerCase();
+    const search=document.getElementById("search").value.toLowerCase();
     if(search){
-        data = data.filter(t=>t.task.toLowerCase().includes(search));
+        data=data.filter(t=>t.task.toLowerCase().includes(search));
     }
 
-    const cat = document.getElementById("filterCategory").value;
-    const stat = document.getElementById("filterStatus").value;
+    const cat=document.getElementById("filterCategory").value;
+    const stat=document.getElementById("filterStatus").value;
 
-    if(cat) data = data.filter(t=>t.cat==cat);
-    if(stat) data = data.filter(t=>t.status==stat);
+    if(cat) data=data.filter(t=>t.cat==cat);
+    if(stat) data=data.filter(t=>t.status==stat);
 
-    const sort = document.getElementById("sortBy").value;
-    if(sort=="due"){
-        data.sort((a,b)=>new Date(a.due)-new Date(b.due));
-    }
-    if(sort=="priority"){
-        data.sort((a,b)=>a.priority=="High"?-1:1);
-    }
+    const sort=document.getElementById("sortBy").value;
+    if(sort=="due") data.sort((a,b)=>new Date(a.due)-new Date(b.due));
+    if(sort=="priority") data.sort((a,b)=>a.priority=="High"?-1:1);
 
-    table.innerHTML = `
+    table.innerHTML=`
     <tr>
     <th>Task</th><th>Category</th><th>Priority</th><th>Status</th><th>Due</th><th>Action</th>
     </tr>`;
 
     data.forEach((t,i)=>{
-        table.innerHTML += `
+        table.innerHTML+=`
         <tr>
         <td>${t.task}</td>
         <td>${t.cat}</td>
@@ -319,7 +328,7 @@ function render(){
             t.status=='Completed'?'done':
             t.status=='In Progress'?'progress-status':'not'
         }">${t.status}</span></td>
-        <td>${t.due || '-'}</td>
+        <td>${t.due||'-'}</td>
         <td>
             <button class="action-btn edit" onclick="editTask(${i})">Edit</button>
             <button class="action-btn delete" onclick="del(${i})">Delete</button>
@@ -327,56 +336,53 @@ function render(){
         </tr>`;
     });
 
-    let total = tasks.length;
-    let completed = tasks.filter(t=>t.status=="Completed").length;
-    let inprogress = tasks.filter(t=>t.status=="In Progress").length;
-    let notstarted = tasks.filter(t=>t.status=="Not Started").length;
-    let pending = total - completed;
+    let total=tasks.length;
+    let completed=tasks.filter(t=>t.status=="Completed").length;
+    let inprogress=tasks.filter(t=>t.status=="In Progress").length;
+    let notstarted=tasks.filter(t=>t.status=="Not Started").length;
+    let pending=total-completed;
 
-    document.getElementById("total").innerText = total;
-    document.getElementById("completed").innerText = completed;
-    document.getElementById("pending").innerText = pending;
-    document.getElementById("inprogress").innerText = inprogress;
-    document.getElementById("notstarted").innerText = notstarted;
+    document.getElementById("total").innerText=total;
+    document.getElementById("completed").innerText=completed;
+    document.getElementById("pending").innerText=pending;
+    document.getElementById("inprogress").innerText=inprogress;
+    document.getElementById("notstarted").innerText=notstarted;
 }
 
 function addTask(){
-    const taskInput = document.getElementById("task");
-    const categoryInput = document.getElementById("category");
-    const priorityInput = document.getElementById("priority");
-    const statusInput = document.getElementById("status");
-    const dueInput = document.getElementById("due");
+    const task=document.getElementById("task").value;
+    if(!task) return alert("Enter task");
 
-    if(!taskInput.value) return alert("Enter task");
-
-    const newTask = {
-        task: taskInput.value,
-        cat: categoryInput.value,
-        priority: priorityInput.value,
-        status: statusInput.value,
-        due: dueInput.value
+    const newTask={
+        task:task,
+        cat:document.getElementById("category").value,
+        priority:document.getElementById("priority").value,
+        status:document.getElementById("status").value,
+        due:document.getElementById("due").value
     };
 
     if(editIndex==-1){
         tasks.push(newTask);
     } else {
-        tasks[editIndex] = newTask;
-        editIndex = -1;
+        tasks[editIndex]=newTask;
+        editIndex=-1;
     }
 
-    taskInput.value="";
+    document.getElementById("task").value="";
     save();
     render();
+    closeModal();
 }
 
 function editTask(i){
-    const t = tasks[i];
-    document.getElementById("task").value = t.task;
-    document.getElementById("category").value = t.cat;
-    document.getElementById("priority").value = t.priority;
-    document.getElementById("status").value = t.status;
-    document.getElementById("due").value = t.due;
-    editIndex = i;
+    const t=tasks[i];
+    document.getElementById("task").value=t.task;
+    document.getElementById("category").value=t.cat;
+    document.getElementById("priority").value=t.priority;
+    document.getElementById("status").value=t.status;
+    document.getElementById("due").value=t.due;
+    editIndex=i;
+    openModal();
 }
 
 function del(i){
