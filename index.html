@@ -72,65 +72,28 @@ body {
     gap:10px;
 }
 
+.form-grid {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:10px;
+    justify-items:center;
+}
+
 .form-grid input,
 .form-grid select {
-    width:100%;
-    padding:8px;
+    width:85%;
+    padding:6px;
+    font-size:13px;
 }
 
+/* BUTTON SMALL + CENTER */
 .form-grid button {
-    grid-column:span 2;
-    padding:10px;
+    grid-column: span 2;
+    width:40%;
+    padding:7px;
+    font-size:13px;
     background:#2c5fa8;
     color:white;
-    border:none;
-    border-radius:5px;
-}
-
-/* CONTROLS */
-.controls {
-    display:flex;
-    gap:10px;
-    margin-top:20px;
-    flex-wrap:wrap;
-}
-.controls input, .controls select {
-    padding:6px;
-}
-
-/* TABLE */
-table {
-    width:100%;
-    border-collapse:collapse;
-    background:white;
-    margin-top:15px;
-}
-th, td {
-    border:1px solid #ccc;
-    padding:10px;
-    text-align:center;
-}
-th {
-    background:#7fa6d9;
-    color:white;
-}
-
-/* BADGES */
-.badge {
-    padding:5px 10px;
-    border-radius:5px;
-    color:white;
-}
-.high{background:red;}
-.low{background:orange;}
-.progress-status{background:#f39c12;}
-.not{background:gray;}
-.done{background:green;}
-
-/* BUTTONS */
-.action-btn {
-    padding:5px 8px;
-    margin:2px;
     border:none;
     border-radius:5px;
     cursor:pointer;
