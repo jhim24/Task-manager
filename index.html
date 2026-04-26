@@ -320,40 +320,43 @@ function render(){
 }
 
 function addTask(){
-    const task = document.getElementById("task").value;
-    if(!task) return alert("Enter task");
+    const taskInput = document.getElementById("task");
+    const categoryInput = document.getElementById("category");
+    const priorityInput = document.getElementById("priority");
+    const statusInput = document.getElementById("status");
+    const dueInput = document.getElementById("due");
 
-    if(editIndex==-1){
-        tasks.push({
-            task,
-            cat:category.value,
-            priority:priority.value,
-            status:status.value,
-            due:due.value
-        });
+    if(!taskInput.value) return alert("Enter task");
+
+    const newTask = {
+        task: taskInput.value,
+        cat: categoryInput.value,
+        priority: priorityInput.value,
+        status: statusInput.value,
+        due: dueInput.value
+    };
+
+    if(editIndex == -1){
+        tasks.push(newTask);
     } else {
-        tasks[editIndex] = {
-            task,
-            cat:category.value,
-            priority:priority.value,
-            status:status.value,
-            due:due.value
-        };
+        tasks[editIndex] = newTask;
         editIndex = -1;
     }
 
-    document.getElementById("task").value="";
+    taskInput.value = "";
     save();
     render();
 }
 
 function editTask(i){
-    let t = tasks[i];
-    task.value = t.task;
-    category.value = t.cat;
-    priority.value = t.priority;
-    status.value = t.status;
-    due.value = t.due;
+    const t = tasks[i];
+
+    document.getElementById("task").value = t.task;
+    document.getElementById("category").value = t.cat;
+    document.getElementById("priority").value = t.priority;
+    document.getElementById("status").value = t.status;
+    document.getElementById("due").value = t.due;
+
     editIndex = i;
 }
 
