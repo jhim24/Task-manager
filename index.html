@@ -253,6 +253,7 @@ tr:hover {
 <!-- ADD BUTTON -->
 
 <button class="open-btn" onclick="openModal()">+ Add Task</button>
+<button class="open-btn" onclick="openChequePage()">💰 Cheque Reminder</button>
 
 <!-- CONTROLS -->
 
@@ -438,7 +439,9 @@ function del(i){
     save();
     render();
 }
-
+function openChequePage(){
+    window.open("cheque.html", "_blank");
+}
 render();
 </script>
 
